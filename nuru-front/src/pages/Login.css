@@ -1,0 +1,57 @@
+button {
+    width: 250px;
+    height: 77px;
+    margin: 50px 50px;
+    padding: 10px 20px;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.kakaoButton {
+    border: solid 1px #b8b0b0;
+    background-color: #ffc107;
+    top: 65%;
+}
+
+.nuruButton {
+    border: solid 1px #b8b0b0;
+    background-color: #c9f955;
+    top: 75%;
+}
+
+.guestButton {
+    border: solid 1px #b8b0b0;
+    background-color: #d5d3ce;
+    top: 85%;
+}
+
+span {
+    font-family: CascadiaCode;
+    font-size: 19px;
+    font-weight: 600;
+    font-stretch: normal;
+    line-height: 1.16;
+    letter-spacing: normal;
+    text-align: center;
+    color: #000
+}
+.Logo {
+    width: 150px;
+    height: 80px;
+    margin: 0 50px 351.9px;
+    font-family: HCRBatangExt;
+    font-size: 25px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.32;
+    letter-spacing: normal;
+    text-align: center;
+    color: #000;
+}
+
+.Logo span {
+    font-size: 35px;
+    color: #255700;
+}

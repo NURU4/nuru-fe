@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import queryString from 'query-string';
 import axios from 'axios';
+import Cookies from 'universal-cookie';
+import { useHistory } from 'react-router';
 
-
-const KakaoAuth = () => {
+const KakaoAuth = (setCookie) => {
+    const history = useHistory();
+    const cookies = new Cookies();
     const query = queryString.parse(window.location.search);
     const [nickname, setNickName] = useState("");
     const [code, setCode] = useState("");
@@ -20,11 +23,24 @@ const KakaoAuth = () => {
         const data = {
             "USER_KAKAO_CODE": uri_code
         };
-        axios.post('/signin/social', data, {
+        axios.post('/signin/kakao', data, {
             headers: {
             "Content-Type": 'application/json',
         }})
-        .then(res=>{console.log(res)})
+        .then(res=>res['data'])
+        .then(data=>data['token'])
+        .then(token=>{
+            cookies.set('token', token);
+            console.log(cookies.get('token'));
+            history.push('/login/nuru');
+        })
+    };
+    return <div>
+        <button onClick={kakaoTokenHandler}>카카오톡으로 로그인 하시겠습니까?</button>
+    </div>;
+}
+
+export default KakaoAuth
         /*
         fetch('http://localhost:8000/signin/social', {
             method: 'POST',
@@ -66,16 +82,7 @@ const KakaoAuth = () => {
                         console.log("error");
                     }
                 })
-            
-        });*/
-    }
-    return <div>
-        <button onClick={kakaoTokenHandler}>카카오톡으로 로그인 하시겠습니까?</button>
-    </div>;
-}
-
-export default KakaoAuth
-
+*/
 
     
     

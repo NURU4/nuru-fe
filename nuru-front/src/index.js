@@ -1,8 +1,11 @@
+import axios from 'axios';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import FirstPage from './FirstPage';
-import Login from './pages/Nuru';
 
-ReactDOM.render(<App/>, document.getElementById('root'));
+axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.withCredentials = false;
+ReactDOM.render(<App/>, document.getElementById('root')      
+);
 

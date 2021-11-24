@@ -25,8 +25,17 @@ button {
     background-color: #d5d3ce;
     top: 85%;
 }
+.mainText {
+    font-size: 50px !important;
+    color: rgb(3, 78, 0) !important;
+}
 
-span {
+.description {
+    font-size: 20px !important;
+    color: rgb(41, 41, 41) !important;
+}
+
+.buttonText {
     font-family: CascadiaCode;
     font-size: 19px;
     font-weight: 600;
@@ -37,6 +46,10 @@ span {
     color: #000
 }
 .Logo {
+    position: absolute;
+    left: 50%;
+    top: 10%;
+    transform: translate(-50%, -50%);
     width: 150px;
     height: 80px;
     margin: 0 50px 351.9px;
@@ -48,10 +61,7 @@ span {
     line-height: 1.32;
     letter-spacing: normal;
     text-align: center;
-    color: #000;
+    color: rgb(2, 170, 114);
 }
 
-.Logo span {
-    font-size: 35px;
-    color: #255700;
-}
+

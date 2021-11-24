@@ -1,66 +1,83 @@
-import React from 'react';
-import {withRouter, Redirect} from "react-router-dom";
-
+import React, { useState } from 'react';
 //login-nuru
 
-class Nuru extends React.Component {
-    constructor(){
-        super();
-        this.state = {
-            USER_EMAIL : "",
-            USER_PW : "",
-            email_vaild : false,
-            pw_vaild: false,
-        };
-    }
 
-    checkEmail = (event) => {
-        this.setState({ USER_EMAIL : event.target.value });
-        if (event.target.value.includes("@")) { //check value is e-mail or not
-            this.setState({email_vaild : true});
+const Nuru = () => {
+    const [USER_EMAIL, setEmail] = useState("");
+    const [USER_PW, setPw] = useState("");
+    const [emailValid, setEmailValid] = useState(0);
+    const [pwValid, setPwValid] = useState(0);
+
+    const checkEmail = (event) => {
+        console.log(event.target.value.indexOf('@'))
+        let isValid = event.target.value.indexOf('@')
+        if (isValid > 0) { //check value is e-mail or not
+            setEmailValid({emailValid : 1});
         }
+        else{
+            setEmailValid({emailValid : 0});
+        }
+        setEmail({USER_EMAIL: event.target.value});
     };
 
-    checkPassword = (event) => {
-        this.setState({ USER_PW : event.target.value });
-        if (event.target.value.length >= 6){ // check password length
-            this.setState({pw_vaild : true});
+    const checkPassword = (event) => { 
+        if (event.target.value.length >= 6) { 
+            setPwValid({pwValid : 1});
         }
+        else{
+            setPwValid({pwValid : 0});
+        }
+        setPw({USER_PW: event.target.value});
     }
 
-    btnClick = () => {
-        console.log("이메일", this.state.USER_EMAIL);
-        console.log("비밀번호", this.state.USER_PW);
+    const submitInfo = () => {
+        console.log(emailValid)
+        console.log(pwValid)
+        if (!emailValid["emailValid"] || !pwValid["pwValid"]){
+            console.log("이메일 혹은 패스워드 형식이 부적절합니다")
+            return
+        }
+        const formData = {
+            "USER_EMAIL": USER_EMAIL["USER_EMAIL"],
+            "USER_PW": USER_PW["USER_PW"]
+        }
+        fetch('http://localhost:8000/signin/nuru', {
+            method: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        }).then(res=>res.json()).then(jsonformat=>{
+            console.log(jsonformat['token']);
+            
+        });
     }
 
-    render() {
-        return (
-            <div className="nuruLogin">
-                <div className="loginForm">
-                    <input
-                        className="emailInput"
-                        type="text"
-                        placeholder="사용자 이메일"
-                        onChange={this.checkEmail}
-                    />
-                    <input
-                        className="pwInput"
-                        type="text"
-                        placeholder="비밀번호"
-                        onChange={this.checkPassword}
-                    />
-                    <button
-                        className="loginButton"
-                        type="button"
-                        onClick={this.btnClick}>
-                        로그인
-                    </button>
+    return (
+        <div className="nuruLogin">
+            <div className="loginForm">
+                <input
+                    className="emailInput"
+                    type="text"
+                    placeholder="사용자 이메일"
+                    onChange={checkEmail}
+                />
+                <input
+                    className="pwInput"
+                    type="text"
+                    placeholder="비밀번호"
+                    onChange={checkPassword}
+                />
+                <button
+                    className="loginButton"
+                    type="button"
+                    onClick= {submitInfo}>
+                </button>
 
-                </div>
             </div>
-        )
-    }
-    
+         </div>
+    );
 }
 
-export default Nuru;
+export default Nuru

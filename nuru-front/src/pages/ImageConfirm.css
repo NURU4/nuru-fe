@@ -1,0 +1,13 @@
+#gameImage {
+    position: absolute;
+    left:50%;
+    top:30%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    border: solid 1.5px #000;
+    background-color: #fff;
+}
+img {
+    object-fit: contain;
+}

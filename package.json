@@ -1,1 +1,5 @@
-{}
+{
+  "dependencies": {
+    "react-image-crop": "^9.0.5"
+  }
+}

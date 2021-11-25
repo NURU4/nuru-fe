@@ -2,7 +2,7 @@ import React from 'react';
 import { authURL } from './OAuth';
 import queryString from 'query-string';
 import axios from 'axios';
-
+import logo from './static/kakao_login_medium_narrow.png'
 const KakaoLogin = () => {
     const query = queryString.parse(window.location.search);
     console.log(query)
@@ -34,9 +34,12 @@ const KakaoLogin = () => {
     }
     return (
         <>
-            <a href={authURL}>
-                카카오톡id로 로그인
+        <div>
+            <a href={authURL} style={{position:"absolute", left:"50%", top:"50%", transform: "translate(-50%, -50%)", fontSize: "20px"}}>
+                <img src={logo} alt="logo" ></img>
             </a>
+        </div>
+            
         </>
         
     );

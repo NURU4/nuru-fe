@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Nuru.css'
 //login-nuru
 
 
@@ -56,23 +57,31 @@ const Nuru = () => {
 
     return (
         <div className="nuruLogin">
+            <div id="Login">Login</div>
+            <div id ="LoginSubtext">Sign in to Start Game</div>
             <div className="loginForm">
-                <input
-                    className="emailInput"
-                    type="text"
-                    placeholder="사용자 이메일"
-                    onChange={checkEmail}
-                />
-                <input
-                    className="pwInput"
-                    type="text"
-                    placeholder="비밀번호"
-                    onChange={checkPassword}
-                />
+                <div className="Comp">
+                    <input
+                        className="emailInput"
+                        type="text"
+                        placeholder="사용자 이메일"
+                        onChange={checkEmail}
+                    />
+                </div>
+                <div id="space"></div>
+                <div className="Comp">
+                    <input
+                        className="pwInput"
+                        type="text"
+                        placeholder="비밀번호"
+                        onChange={checkPassword}
+                    />
+                </div>
+
                 <button
                     className="loginButton"
                     type="button"
-                    onClick= {submitInfo}>
+                    onClick= {submitInfo}>Login
                 </button>
 
             </div>

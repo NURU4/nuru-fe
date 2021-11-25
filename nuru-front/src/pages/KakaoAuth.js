@@ -8,12 +8,9 @@ const KakaoAuth = (setCookie) => {
     const history = useHistory();
     const cookies = new Cookies();
     const query = queryString.parse(window.location.search);
-    const [nickname, setNickName] = useState("");
-    const [code, setCode] = useState("");
     React.useEffect(() => {  
         if (query.code) {
             //redirect로 넘어온 URL에서 코드 값 가져오기
-            //setCode(query.code.toString());
             kakaoTokenHandler(query.code.toString())
         }
     }, []); //컴포넌트가 처음 마운트 시에 query code찾기
@@ -32,11 +29,11 @@ const KakaoAuth = (setCookie) => {
         .then(token=>{
             cookies.set('token', token);
             console.log(cookies.get('token'));
-            history.push('/login/nuru');
+            history.push('/game/image-upload');
         })
     };
-    return <div>
-        <button onClick={kakaoTokenHandler}>카카오톡으로 로그인 하시겠습니까?</button>
+    return <div style={{position:"absolute", left:"50%", top:"50%", transform: "translate(-50%, -50%)", fontSize: "20px"}}>
+        로그인 중입니다. 잠시만 기다려 주세요
     </div>;
 }
 

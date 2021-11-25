@@ -1,0 +1,57 @@
+
+#gameImage {
+    position: absolute;
+    left:50%;
+    top:30%;
+    transform: translate(-50%, -50%);
+    width: 500px;
+    height: 500px;
+    border: solid 1.5px #000;
+    background-color: #fff;
+}
+
+
+#secondLabel {
+    position: absolute;
+    left:40%;
+    top:25%;
+    transform: translate(-50%, -50%);
+    background-color: #02b14b;
+}
+
+.inputLabel { 
+    position: absolute;
+    left:20%;
+    top:25%;
+    transform: translate(-50%, -50%);
+    width: 286px;
+    height: 100px;
+    margin: 20% 30% 30% 20%;
+    border: solid 1px #707070;
+    background-color: #09719f;
+    color: white;
+    text-align: center;
+    font-size: 28px;
+    font-family: CascadiaCode;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 30px;
+    letter-spacing: normal;
+    text-align: center;
+    color: #fff;
+ } 
+
+
+ #submit {
+    position: absolute; 
+    width: 1px; 
+    height: 1px; 
+    padding: 0; 
+    margin: -1px; 
+    overflow: 
+    hidden; 
+    clip:rect(0,0,0,0); 
+    border: 0;
+
+}

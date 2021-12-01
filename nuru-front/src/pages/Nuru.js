@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import './Nuru.css'
+import Cookies from 'universal-cookie';
+import { useHistory } from 'react-router';
 //login-nuru
 
 
 const Nuru = () => {
+    const history = useHistory();
+    const cookies = new Cookies();
     const [USER_EMAIL, setEmail] = useState("");
     const [USER_PW, setPw] = useState("");
     const [emailValid, setEmailValid] = useState(0);
@@ -49,9 +53,12 @@ const Nuru = () => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(formData)
-        }).then(res=>res.json()).then(jsonformat=>{
-            console.log(jsonformat['token']);
-            
+        }).then(res=>res.json())
+        .then(jsonformat=>jsonformat['token'])
+        .then(token=>{
+                cookies.set('token', token);
+                console.log(cookies.get('token'));
+                history.push('/game/image-upload');
         });
     }
 
@@ -72,7 +79,7 @@ const Nuru = () => {
                 <div className="Comp">
                     <input
                         className="pwInput"
-                        type="text"
+                        type="password"
                         placeholder="비밀번호"
                         onChange={checkPassword}
                     />

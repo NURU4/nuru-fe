@@ -1,21 +1,34 @@
 #container {
     width: 100%;
     height: 100%;
-    /*transform: translate(50%, 50%);*/
 }
 
-#gameImage {
-    max-width: 100%;
-    max-height: 100%;
+.gameImage {
     position: absolute;
+    display: flex;
+    justify-content: center;
+    float: left;
     left:50%;
     top: 30%;
     transform: translate(-50%, -50%);
+    max-width: 100%;
     width: 50%;
     height: 50%;
-    border: solid 1.5px #000;
-    background-color: #fff;
 }
+
+.imageBox {
+    width: 500px;
+    height: 500px;
+    position: relative;
+}
+
+.imageBox:after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+    border:solid 1px;
+}
+
 
 #inputLabels {
     position: absolute;
@@ -28,12 +41,24 @@
     justify-content: center;
 }
 
+img {
+    border: 0;
+    outline: 0;
+    outline-color: beige;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    margin: 5%;
+}
+
+
+
 .inputLabel {
     box-sizing: border-box;
     max-width: 100%;
     max-height: 100%;
     padding: 2% 2% 2% 2%;
-    border: solid 1px #707070;
+    border: solid 1px #07070700;
     background-color: #09719f;
     color: white;
     text-align: center;
@@ -47,12 +72,6 @@
 
 a {
     text-decoration: none;
-}
-
-span{
-    margin-left:auto;
-    width: 300px;
-    text-align: center;
 }
 
 

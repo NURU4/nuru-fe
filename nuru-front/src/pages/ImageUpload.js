@@ -7,7 +7,8 @@ import './ImageUpload.css';
 
 const ImageUpload = ({location}) => {
 
-    const [selectedImage, setSelectedImage] = useState(null);
+    const [selectedImages, setSelectedImages] = useState([]);
+    const [previewImages, setPreviewImages] = useState([]);
     const cookies = new Cookies();
     //const [isChanged, setChange] = useState(0);
     const history = useHistory();
@@ -18,28 +19,52 @@ const ImageUpload = ({location}) => {
         history.push("/");
     }
 
-    useEffect(()=> {
-        console.log('a')
-        handleImageUpload()
-    }, [selectedImage])
-
-    useEffect(() => {
-        setCount(-1);
-        setCount(counter+1);
-    }, [])
     useEffect(()=>{
-        console.log('imagemodified')
-    }, [imageSrc])
+    }, [selectedImages, previewImages])
 
     const handleImageChange = (event) => {
-        setSelectedImage(event.target.files[0]);
+        const fileArr = event.target.files;
+        let fileURLS = [];
+        const root = document.getElementById('imageContainer');
+        while(root.childElementCount > 0) {
+            root.removeChild(root.firstChild);
+        }
+        setPreviewImages([])
+        for(let i = 0; i < fileArr.length; i++) {
+            let file = fileArr[i];
+          
+            let reader = new FileReader();
+            reader.onload = () => {
+                console.log("load" + String(i));
+                fileURLS[i] = reader.result;
+                //fileURLS: preview of file( preview ImageSrc )
+                setPreviewImages([...fileURLS]);
+            };
+            reader.onloadend = () => {
+                console.log("loadend" + String(i));
+
+                var container = document.createElement('div');
+                container.setAttribute("className", "imageBox");
+
+                var x = document.createElement('img');
+                x.setAttribute("src", String(fileURLS[i]));
+                x.setAttribute("alt", "img unloaded");
+
+                container.appendChild(x);
+                root.appendChild(container);
+            }
+            reader.readAsDataURL(file);
+            console.log(previewImages);
+        }
+        //fileArr: file informations ( send to endpoint )
+        setSelectedImages(fileArr);
     };
 
     const handleImageUpload = () => {
-        console.log("rerenderstart0");
+        /*
         const formData = new FormData();
         formData.append('token', cookies.get('token'));
-        formData.append('userImage', selectedImage);
+        formData.append('userImage', selectedImages);
         //await
         axios.post('/imageupload', formData, {
             'content-type': 'multipart/form-data'
@@ -55,33 +80,29 @@ const ImageUpload = ({location}) => {
             const urlContainer = res['data']
             console.log(urlContainer);
             cookies.set('gameImage', urlContainer);
-            /*
-            history.push({
-                pathname:'/game/image-upload/confirm'
-            });
-            */
         }).catch(err=>{
             console.log(err);
-            //alert("이미지를 불러올 수 없습니다.");
         })
         const modified = cookies.get('gameImage');
         /*
         history.push({
             pathname:'/game/image-upload'
         });
-        */
         setCount(counter+1);
         setImage("https://s3-ap-northeast-2.amazonaws.com/nuruimages/uploaded-image" + "?" + Date.now())
         if (counter !== 0) alert('이미지가 업로드되었습니다.');
+        */
     }
     return <>
         <div id="container">
-            <img id="gameImage" src={imageSrc} alt="img unloaded"/>
+            <div className='gameImage' id="imageContainer">
+            </div>
+            
             <div id="inputLabels">
                 <label className='inputLabel' id='firstLabel' htmlFor='submit'>새 이미지 업로드</label>
                 <a href="https://www.naver.com" className='inputLabel' id='secondLabel'>이전 이미지 로드</a>
             </div>
-            <input id='submit' type='file' accept='image/*' name='file' onChange={handleImageChange}/>
+            <input id='submit' type='file' accept='image/*' multiple name='file' onChange={handleImageChange}/>
         </div>
     </>
 }

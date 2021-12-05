@@ -13,11 +13,6 @@ const ImageUpload = ({location}) => {
     //const [isChanged, setChange] = useState(0);
     const history = useHistory();
     const [imageSrc, setImage] = useState("https://s3-ap-northeast-2.amazonaws.com/nuruimages/uploaded-image");
-    const [counter, setCount] = useState(0);
-
-    const Anchor = (props) =>{
-        history.push("/");
-    }
 
     useEffect(()=>{
     }, [selectedImages, previewImages])
@@ -25,6 +20,13 @@ const ImageUpload = ({location}) => {
     const handleImageChange = (event) => {
         const fileArr = event.target.files;
         let fileURLS = [];
+        if (fileArr.length > 5){
+            alert("이미지는 한 번에 5개 까지만 업로드 가능합니다!");
+            return;
+        }
+        if (fileArr.length === 0){
+            return;
+        }
         const root = document.getElementById('imageContainer');
         while(root.childElementCount > 0) {
             root.removeChild(root.firstChild);
@@ -32,36 +34,68 @@ const ImageUpload = ({location}) => {
         setPreviewImages([])
         for(let i = 0; i < fileArr.length; i++) {
             let file = fileArr[i];
-          
             let reader = new FileReader();
             reader.onload = () => {
-                console.log("load" + String(i));
+                //console.log("load" + String(i));
                 fileURLS[i] = reader.result;
                 //fileURLS: preview of file( preview ImageSrc )
                 setPreviewImages([...fileURLS]);
             };
             reader.onloadend = () => {
-                console.log("loadend" + String(i));
+                //console.log("loadend" + String(i));
 
                 var container = document.createElement('div');
                 container.setAttribute("className", "imageBox");
-
                 var x = document.createElement('img');
                 x.setAttribute("src", String(fileURLS[i]));
                 x.setAttribute("alt", "img unloaded");
-
+                x.setAttribute("style", "border: 2px solid;")
                 container.appendChild(x);
                 root.appendChild(container);
             }
             reader.readAsDataURL(file);
-            console.log(previewImages);
+            //console.log(previewImages);
         }
         //fileArr: file informations ( send to endpoint )
         setSelectedImages(fileArr);
     };
+    const gameStart = () =>{
+        let done = []
+        for (let i = 0; i < selectedImages.length; i++){
+            const formData = new FormData();
+            formData.append('token', cookies.get('token'));
+            formData.append('userImage', selectedImages[i]);
+            console.log(selectedImages[i])
+            axios.post('/imageupload', formData, {
+                'content-type': 'multipart/form-data'
+            }).then(res=>{
+                console.log(res);
+                if (res['status'] === 200){
+                    done.push(String(i+1))
+                    if (i === selectedImages.length - 1){
+                        console.log("all done");
+                    }
+                }
+            }).catch(e=>{
+                alert(String(i+1)+"번째 이미지 업로드를 실패했습니다.");
+            })
+        }
+    }
 
-    const handleImageUpload = () => {
-        /*
+    const getMyImages = () => {
+        const mytoken = cookies.get('token')
+        axios.get('/getimages', {
+            headers: {
+                "Content-Type": 'application/json',
+                "Authorization": mytoken
+            }
+        }).then(res=>{
+            console.log(res);
+        })
+    }
+/*
+    const handleImageUpload = () => {  
+
         const formData = new FormData();
         formData.append('token', cookies.get('token'));
         formData.append('userImage', selectedImages);
@@ -91,8 +125,9 @@ const ImageUpload = ({location}) => {
         setCount(counter+1);
         setImage("https://s3-ap-northeast-2.amazonaws.com/nuruimages/uploaded-image" + "?" + Date.now())
         if (counter !== 0) alert('이미지가 업로드되었습니다.');
-        */
+        
     }
+    */
     return <>
         <div id="container">
             <div className='gameImage' id="imageContainer">
@@ -102,11 +137,12 @@ const ImageUpload = ({location}) => {
                 <label className='inputLabel' id='firstLabel' htmlFor='submit'>새 이미지 업로드</label>
                 <a href="https://www.naver.com" className='inputLabel' id='secondLabel'>이전 이미지 로드</a>
             </div>
+            <button onClick={gameStart} id='gameStart'>선택된 이미지들로<br/>게임 진행</button>
             <input id='submit' type='file' accept='image/*' multiple name='file' onChange={handleImageChange}/>
+            <button onClick={getMyImages}>dddddddddddd</button>
         </div>
     </>
-}
-//                
+}          
 export default ImageUpload;
 
 

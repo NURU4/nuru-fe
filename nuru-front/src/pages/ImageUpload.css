@@ -39,6 +39,7 @@
     padding: auto;
     display: flex;
     justify-content: center;
+    text-align: center;
 }
 
 img {
@@ -55,36 +56,34 @@ img {
 
 
 .inputLabel {
-    box-sizing: border-box;
+    display: block;
     max-width: 100%;
     max-height: 100%;
+    width: 250px;
     padding: 2% 2% 2% 2%;
-    border: solid 1px #07070700;
-    background-color: #09719f;
     color: white;
     text-align: center;
     font-size: 25px;
     font-family: CascadiaCode;
     font-weight: 500;
-    text-align: center;
     color: #fff;
-    margin: 2%;
+    margin: 5%;
 }
 
 a {
     text-decoration: none;
 }
 
-
 #firstLabel {
     background-color:#006b99;
 }
+
 #secondLabel {
     background-color: rgb(0, 156, 104);
 }
 
 
-#submit {
+.hide {
     position: absolute;
     width: 1px; 
     height: 1px; 
@@ -110,7 +109,6 @@ a {
     max-width: 100%;
     max-height:100%;
 }
-
 
 
 

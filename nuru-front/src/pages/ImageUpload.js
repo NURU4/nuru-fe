@@ -10,9 +10,7 @@ const ImageUpload = ({location}) => {
     const [selectedImages, setSelectedImages] = useState([]);
     const [previewImages, setPreviewImages] = useState([]);
     const cookies = new Cookies();
-    //const [isChanged, setChange] = useState(0);
     const history = useHistory();
-    const [imageSrc, setImage] = useState("https://s3-ap-northeast-2.amazonaws.com/nuruimages/uploaded-image");
 
     useEffect(()=>{
     }, [selectedImages, previewImages])
@@ -36,14 +34,11 @@ const ImageUpload = ({location}) => {
             let file = fileArr[i];
             let reader = new FileReader();
             reader.onload = () => {
-                //console.log("load" + String(i));
                 fileURLS[i] = reader.result;
                 //fileURLS: preview of file( preview ImageSrc )
                 setPreviewImages([...fileURLS]);
             };
             reader.onloadend = () => {
-                //console.log("loadend" + String(i));
-
                 var container = document.createElement('div');
                 container.setAttribute("className", "imageBox");
                 var x = document.createElement('img');
@@ -54,26 +49,32 @@ const ImageUpload = ({location}) => {
                 root.appendChild(container);
             }
             reader.readAsDataURL(file);
-            //console.log(previewImages);
         }
         //fileArr: file informations ( send to endpoint )
         setSelectedImages(fileArr);
     };
     const gameStart = () =>{
         let done = []
+        if (selectedImages.length === 0) alert("이미지가 선택되지 않았습니다!");
         for (let i = 0; i < selectedImages.length; i++){
             const formData = new FormData();
-            formData.append('token', cookies.get('token'));
             formData.append('userImage', selectedImages[i]);
-            console.log(selectedImages[i])
+            const mytoken = cookies.get('token')
             axios.post('/imageupload', formData, {
-                'content-type': 'multipart/form-data'
+                headers: {
+                    "Content-Type": 'multipart/form-data',
+                    "Authorization": mytoken
+                }
             }).then(res=>{
                 console.log(res);
                 if (res['status'] === 200){
                     done.push(String(i+1))
                     if (i === selectedImages.length - 1){
                         console.log("all done");
+                        history.push({
+                            pathname: "/game/gamescene",
+                            state: {previewImages: previewImages}
+                        })
                     }
                 }
             }).catch(e=>{
@@ -84,15 +85,37 @@ const ImageUpload = ({location}) => {
 
     const getMyImages = () => {
         const mytoken = cookies.get('token')
+        console.log(mytoken)
         axios.get('/getimages', {
             headers: {
                 "Content-Type": 'application/json',
                 "Authorization": mytoken
             }
-        }).then(res=>{
-            console.log(res);
+        }).then(res=>res['data']).then(res=>res['list']).then(list=>{
+            console.log(list);
         })
     }
+
+    return <>
+        <div id="container">
+            <div className='gameImage' id="imageContainer">
+            </div>
+            
+            <div id="inputLabels">
+                <label className='inputLabel' id='firstLabel' htmlFor='submit'>새 이미지 업로드</label>
+                <label className='inputLabel' id='secondLabel' htmlFor='load'>이전 이미지 로드</label>
+            </div>
+            <input id='submit' type='file' className="hide" accept='image/*' multiple name='file' onChange={handleImageChange}/>
+            <button onClick={getMyImages} className="hide" id='load'>이전 이미지 로드</button>
+            <button onClick={gameStart} id='gameStart'>선택된 이미지들로<br/>게임 진행</button>
+        </div>
+    </>
+}
+
+export default ImageUpload;
+
+
+
 /*
     const handleImageUpload = () => {  
 
@@ -128,26 +151,6 @@ const ImageUpload = ({location}) => {
         
     }
     */
-    return <>
-        <div id="container">
-            <div className='gameImage' id="imageContainer">
-            </div>
-            
-            <div id="inputLabels">
-                <label className='inputLabel' id='firstLabel' htmlFor='submit'>새 이미지 업로드</label>
-                <a href="https://www.naver.com" className='inputLabel' id='secondLabel'>이전 이미지 로드</a>
-            </div>
-            <button onClick={gameStart} id='gameStart'>선택된 이미지들로<br/>게임 진행</button>
-            <input id='submit' type='file' accept='image/*' multiple name='file' onChange={handleImageChange}/>
-            <button onClick={getMyImages}>dddddddddddd</button>
-        </div>
-    </>
-}          
-export default ImageUpload;
-
-
-
-
 /*
     const [selectedImage, setSelectedImage] = useState(null);
     const cookies = new Cookies();

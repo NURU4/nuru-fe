@@ -12,6 +12,7 @@ const KakaoAuth = (setCookie) => {
         if (query.code) {
             //redirect로 넘어온 URL에서 코드 값 가져오기
             kakaoTokenHandler(query.code.toString())
+            cookies.set('token', '', -1)
         }
     }, []); //컴포넌트가 처음 마운트 시에 query code찾기
 
@@ -38,48 +39,6 @@ const KakaoAuth = (setCookie) => {
 }
 
 export default KakaoAuth
-        /*
-        fetch('http://localhost:8000/signin/social', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        }).then(res=>{console.log(res)});
-        */
-       /*
-        const data = {
-            grant_type: "authorization_code",
-            client_id: "c38ee04e16631dabbb8e43a1ed540d05",
-            redirectURI: "http://localhost:3000/oauth/callback/kakao-login",
-            code: code
-        };
-        const queryString = Object.keys(data)
-            .map((k) => encodeURIComponent(k) + '=' + encodeURIComponent(data[k]))
-            .join('&');
-            //토큰 발급
-        axios.post('https://kauth.kakao.com/oauth/token', queryString, {
-            headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'}
-        })
-        .then(res => {
-            console.log(res['data']);})
-        /*
-        .then(data=>{
-            axios.get('http://localhost:8000/social/signin', {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': data['access_token']//'randomtokenfromoauth'
-                }
-            }).then(a=>{
-                    if (a.status === 200){
-                        data = a.json()
-                        setToken(data['USER_TOKEN']);
-                    }
-                    else{
-                        console.log("error");
-                    }
-                })
-*/
 
     
     

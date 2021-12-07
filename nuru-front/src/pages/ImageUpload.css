@@ -42,16 +42,7 @@
     text-align: center;
 }
 
-img {
-    display: block;
-    outline-color: rgb(0, 0, 0);
-    object-fit: cover;
-    min-width: 350px;
-    min-height: 350px;
-    max-width: 350px;
-    max-height:350px;
-    border:rgb(0, 0, 0);
-}
+
 
 
 

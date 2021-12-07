@@ -44,7 +44,10 @@ const ImageUpload = ({location}) => {
                 var x = document.createElement('img');
                 x.setAttribute("src", String(fileURLS[i]));
                 x.setAttribute("alt", "img unloaded");
-                x.setAttribute("style", "border: 2px solid;")
+                x.setAttribute("className", "previewImage")
+                x.setAttribute("style", 
+                    "border: 2px solid;max-width: 350px; max-height:350px; min-width: 350px; min-height:350px; border: solid 1.5px black;"
+                )
                 container.appendChild(x);
                 root.appendChild(container);
             }
@@ -60,6 +63,7 @@ const ImageUpload = ({location}) => {
             const formData = new FormData();
             formData.append('userImage', selectedImages[i]);
             const mytoken = cookies.get('token')
+            console.log(mytoken)
             axios.post('/imageupload', formData, {
                 headers: {
                     "Content-Type": 'multipart/form-data',

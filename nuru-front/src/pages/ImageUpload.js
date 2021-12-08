@@ -11,13 +11,48 @@ const ImageUpload = ({location}) => {
     const [previewImages, setPreviewImages] = useState([]);
     const cookies = new Cookies();
     const history = useHistory();
-
+    const [imageCount, setImageCount] = useState();
     useEffect(()=>{
     }, [selectedImages, previewImages])
 
+    useEffect(()=> {
+        if (previewImages.length === imageCount && imageCount !== 0){
+            var root = document.getElementById('imageContainer');
+            for (let i = 0; i < imageCount; i++){
+                var container = document.createElement('div');
+                container.setAttribute("className", "imageBox");
+                var x = document.createElement('img');
+                x.setAttribute("src", previewImages[i]);
+                x.setAttribute("alt", "img unloaded");
+                x.setAttribute("className", "previewImage")
+                x.setAttribute("style", 
+                    "border: 2px solid;max-width: 350px; max-height:350px; min-width: 350px; min-height:350px; border: solid 1.5px black;"
+                )
+                container.appendChild(x);
+                root.appendChild(container);                
+            }
+        }
+    }, [imageCount, previewImages])
+
+    const readFileAndDisplay = (file) => {
+        const root = document.getElementById('imageContainer');
+        let reader = new FileReader();
+        var fileURLS;
+        reader.readAsDataURL(file);
+        console.log(imageCount)
+        reader.onload = () => {
+            fileURLS = reader.result;
+            setPreviewImages(previewImages =>[...previewImages, fileURLS]);
+        };
+    }
+
     const handleImageChange = (event) => {
+        setImageCount(0)
         const fileArr = event.target.files;
-        let fileURLS = [];
+        setSelectedImages(fileArr);
+        setImageCount(fileArr.length)
+        setPreviewImages([])
+        // let fileURLS = [];
         if (fileArr.length > 5){
             alert("이미지는 한 번에 5개 까지만 업로드 가능합니다!");
             return;
@@ -29,35 +64,12 @@ const ImageUpload = ({location}) => {
         while(root.childElementCount > 0) {
             root.removeChild(root.firstChild);
         }
-        setPreviewImages([])
         for(let i = 0; i < fileArr.length; i++) {
-            let file = fileArr[i];
-            let reader = new FileReader();
-            reader.onload = () => {
-                fileURLS[i] = reader.result;
-                //fileURLS: preview of file( preview ImageSrc )
-                setPreviewImages([...fileURLS]);
-            };
-            reader.onloadend = () => {
-                var container = document.createElement('div');
-                container.setAttribute("className", "imageBox");
-                var x = document.createElement('img');
-                x.setAttribute("src", String(fileURLS[i]));
-                x.setAttribute("alt", "img unloaded");
-                x.setAttribute("className", "previewImage")
-                x.setAttribute("style", 
-                    "border: 2px solid;max-width: 350px; max-height:350px; min-width: 350px; min-height:350px; border: solid 1.5px black;"
-                )
-                container.appendChild(x);
-                root.appendChild(container);
-            }
-            reader.readAsDataURL(file);
+            readFileAndDisplay(fileArr[i])
         }
-        //fileArr: file informations ( send to endpoint )
-        setSelectedImages(fileArr);
+        
     };
     const gameStart = () =>{
-        let done = []
         if (selectedImages.length === 0) alert("이미지가 선택되지 않았습니다!");
         for (let i = 0; i < selectedImages.length; i++){
             const formData = new FormData();
@@ -72,9 +84,8 @@ const ImageUpload = ({location}) => {
             }).then(res=>{
                 console.log(res);
                 if (res['status'] === 200){
-                    done.push(String(i+1))
                     if (i === selectedImages.length - 1){
-                        console.log("all done");
+                        console.log(previewImages);
                         history.push({
                             pathname: "/game/gamescene",
                             state: {previewImages: previewImages}
@@ -82,7 +93,7 @@ const ImageUpload = ({location}) => {
                     }
                 }
             }).catch(e=>{
-                alert(String(i+1)+"번째 이미지 업로드를 실패했습니다.");
+                alert("이미지 업로드를 실패했습니다.");
             })
         }
     }
@@ -104,7 +115,6 @@ const ImageUpload = ({location}) => {
         <div id="container">
             <div className='gameImage' id="imageContainer">
             </div>
-            
             <div id="inputLabels">
                 <label className='inputLabel' id='firstLabel' htmlFor='submit'>새 이미지 업로드</label>
                 <label className='inputLabel' id='secondLabel' htmlFor='load'>이전 이미지 로드</label>
@@ -119,101 +129,3 @@ const ImageUpload = ({location}) => {
 export default ImageUpload;
 
 
-
-/*
-    const handleImageUpload = () => {  
-
-        const formData = new FormData();
-        formData.append('token', cookies.get('token'));
-        formData.append('userImage', selectedImages);
-        //await
-        axios.post('/imageupload', formData, {
-            'content-type': 'multipart/form-data'
-        })
-        .then(res=>{
-            return res['data']}).catch(err=>{
-            console.log(err);
-        })
-        .then(res=>res['image_key'])
-        .then(res=>axios.post('/getimage', {'USER_IMAGE_KEY': res}, {
-            'Authorization': cookies.get('token')
-        })).then(res=>{
-            const urlContainer = res['data']
-            console.log(urlContainer);
-            cookies.set('gameImage', urlContainer);
-        }).catch(err=>{
-            console.log(err);
-        })
-        const modified = cookies.get('gameImage');
-        /*
-        history.push({
-            pathname:'/game/image-upload'
-        });
-        setCount(counter+1);
-        setImage("https://s3-ap-northeast-2.amazonaws.com/nuruimages/uploaded-image" + "?" + Date.now())
-        if (counter !== 0) alert('이미지가 업로드되었습니다.');
-        
-    }
-    */
-/*
-    const [selectedImage, setSelectedImage] = useState(null);
-    const cookies = new Cookies();
-    //const [isChanged, setChange] = useState(0);
-    const history = useHistory();
-    const [imageSrc, setImage] = useState();
-    const [counter, setCount] = useState(0);
-
-    useEffect(()=> {
-        console.log('a')
-        handleImageUpload()
-    }, [selectedImage])
-
-    useEffect(() => {
-        setCount(0);
-        setCount(counter+1);
-    }, [])
-
-    const handleImageChange = (event) => {
-        setSelectedImage(event.target.files[0]);
-    };
-    const handleImageUpload = () => {
-        console.log("rerenderstart0");
-        const formData = new FormData();
-        formData.append('token', cookies.get('token'));
-        formData.append('userImage', selectedImage);
-        //await
-        axios.post('/imageupload', formData, {
-            'content-type': 'multipart/form-data'
-        })
-        .then(res=>{
-            //alert("이미지가 업로드 되었습니다.")
-            return res['data']}).catch(err=>{
-            console.log(err);
-            //alert("이미지 업로드에 실패하였습니다.")
-        })
-        .then(res=>res['image_key'])
-        .then(res=>axios.post('/getimage', {'USER_IMAGE_KEY': res}, {
-            'Authorization': cookies.get('token')
-        })).then(res=>{
-            const urlContainer = res['data']
-            console.log(urlContainer);
-            cookies.set('gameImage', urlContainer);
-            /*
-            history.push({
-                pathname:'/game/image-upload/confirm'
-            });
-
-        }).catch(err=>{
-            console.log(err);
-            //alert("이미지를 불러올 수 없습니다.");
-        })
-        const modified = cookies.get('gameImage');
-        setImage(modified['imageUrl']);
-        /*
-        history.push({
-            pathname:'/game/image-upload'
-        });
-        
-        setCount(counter+1);
-        if (counter !== 0) alert('이미지가 업로드되었습니다.');
-        */

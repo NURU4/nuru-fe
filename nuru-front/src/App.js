@@ -8,16 +8,17 @@ import Cookies from 'universal-cookie';
 import ImageUpload from './pages/ImageUpload.js';
 import ImageConfirm from './pages/ImageConfirm.js';
 import GameScene from './pages/GameScene.js';
+import GameImage from './pages/GameImage.js';
 
 function App() {
   const cookies = new Cookies();
   cookies.set('token', 'emptyToken', {
     path: '/',
-    expires: Math.floor(Date.now / 1000) + 7200
+    expires: Math.floor(Date.now / 1000) + 72000
   })
   cookies.set('gameImage', 'emptyURL', {
     path: '/',
-    expires: Math.floor(Date.now / 1000) + 7200
+    expires: Math.floor(Date.now / 1000) + 72000
   })
   return(
       <BrowserRouter>
@@ -29,6 +30,7 @@ function App() {
           <Route exact path="/game/image-upload" component={ImageUpload}></Route>
           <Route exact path="/game/image-upload/confirm" component={ImageConfirm}></Route>
           <Route exact path="/game/gamescene" component={GameScene}></Route>
+          <Route exact path="/debug/canvas" component={GameImage}></Route>
         </Switch>
       </BrowserRouter>
     );

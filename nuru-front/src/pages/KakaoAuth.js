@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import queryString from 'query-string';
 import axios from 'axios';
 import Cookies from 'universal-cookie';
@@ -14,7 +14,7 @@ const KakaoAuth = (setCookie) => {
             kakaoTokenHandler(query.code.toString())
             cookies.set('token', '', -1)
         }
-    }, []); //컴포넌트가 처음 마운트 시에 query code찾기
+    }); //컴포넌트가 처음 마운트 시에 query code찾기
 
     const kakaoTokenHandler = (uri_code) => {
 

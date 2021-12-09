@@ -5,6 +5,8 @@ import axios from 'axios';
 import logo from './static/kakao_login_medium_narrow.png'
 const KakaoLogin = () => {
     const query = queryString.parse(window.location.search);
+    const protocol = window.location.protocol;
+    const host = window.location.host;
     console.log(query)
     React.useEffect(() => {  
         if (query.code) {
@@ -17,7 +19,7 @@ const KakaoLogin = () => {
         const data = {
             grant_type: "authorization_code",
             client_id: "c38ee04e16631dabbb8e43a1ed540d05",
-            redirectURI: "/oauth/callback/kakao-login",
+            redirectURI: protocol + "//" + host+ "/oauth/callback/kakao-login",
             code: code
         };
         const queryString = Object.keys(data)

@@ -3,13 +3,17 @@ import { useHistory } from 'react-router';
 import './GameScene.css';
 import GameImage from "./GameImage";
 import userEvent from "@testing-library/user-event";
+import axios from "axios";
+
+import good from './static/good.png'
+import bad from './static/bad.png'
 
 const GameScene = (props) => {
     const imageStyle = "max-width: 100%; max-height: 100%;"
     const history = useHistory();
 
-    const [minutes, setMinutes] = useState(0)
-    const [seconds, setSeconds] = useState(0)
+    const [minutes, setMinutes] = useState()
+    const [seconds, setSeconds] = useState()
 
     const [gameImages, setGameImages] = useState(history.location.state.previewImages);
 
@@ -18,23 +22,41 @@ const GameScene = (props) => {
     const maxHeight = 904;
     const radius = 200
     
-    const [answer, setAnswer] = useState([{id:1, x: 450, y: 450}, {id:2, x: 1, y: 1}, {id:3, x: 900, y: 900}])
+    const [gameResult, setGameResult] = useState([])
+
+    const [answer, setAnswer] = useState([])
     const [stageCount, setStageCount] = useState(0);
     const [selectedPixel, setSelectedPixel] = useState({x: -1, y: -1})
 
-    const fillCanvas = (imageSrc) => {
+    const [answerCount, setAnswerCount] = useState(0)
+    const [totalCount, setTotalCount] = useState(0)
+
+    const drawAnswer = () => {
         let canvas = canvasRef.current;
+        let ctx = canvas.getContext('2d')
+        for (let i = 0; i < answer.length; i++){
+            let answerArray = answer[i].components
+            let answerX = answerArray[0]
+            let answerY = answerArray[1]
+            let answerOffsetX = answerArray[2]
+            let answerOffsetY = answerArray[3]
+            ctx.beginPath();
+            ctx.strokeStyle="green"
+            ctx.lineWidth = 5;
+            ctx.strokeRect(answerX, answerY, answerOffsetX, answerOffsetY);
+            ctx.closePath();
+        }
+
+    }
+
+    const fillCanvas = (imageSrc) => {
+        let canvas = canvasRef.current
         let context = canvas.getContext('2d')
         context.clearRect(0, 0, maxWidth, maxHeight)
-        setTimeout(()=>{}, 1000)
         var image = new Image()
+        setTimeout(()=>{}, 1000)
         image.src = imageSrc
-        setTimeout(() => {
-            console.log("sleep~~"); 
-            setSeconds(0);
-            setMinutes(2);
-        }, 1000);
-
+        setTimeout(()=>{}, 1000)
         var imageWidth = image.width;
         var imageHeight = image.height;
         var startPoint_x = 0;
@@ -43,21 +65,46 @@ const GameScene = (props) => {
             if (imageWidth > maxWidth){
                 imageHeight *= maxWidth / imageWidth;
                 imageWidth = maxWidth
-            }
-            startPoint_y = (maxHeight - imageHeight) / 2
+            }   
         }
         else {
             if (imageHeight > maxHeight) {
                 imageWidth *= maxHeight / imageHeight;
                 imageHeight = maxHeight
             }
-            startPoint_x = (maxWidth - imageWidth) / 2
         }
-
+        startPoint_y = (maxHeight - imageHeight) / 2
+        startPoint_x = (maxWidth - imageWidth) / 2
         canvas.width = maxWidth
         canvas.height = maxHeight
         context.drawImage(image, startPoint_x, startPoint_y, imageWidth, imageHeight)
         setTimeout(1000)
+
+        var modifiedImg = imageSrc.split(",")
+        axios.post("http://70f4-34-80-136-41.ngrok.io/invocations", modifiedImg[1], {
+            headers: {
+                "content_type": 'image/png'
+            }
+        }).then(res=>{
+            const answers = res.data.answers
+            const answerLst = []
+            for (let i = 0; i < answers.length; i++) {
+                const comp = {id: i, components: answers[i]}
+                answerLst.push(comp)
+            }
+            setAnswer(answerLst)
+            setAnswerCount(0)
+            setTotalCount(answerLst.length)
+            return res.data.image
+        }).then(imgVar=>{
+            var myRoot = document.getElementById("2")
+            if (myRoot.childNodes.length > 0) myRoot.removeChild( myRoot.firstChild)
+            var myImg = document.createElement("img")
+            myImg.setAttribute("src", modifiedImg[0] + "," +imgVar)
+            myRoot.appendChild(myImg)
+            setSeconds(10);
+            setMinutes(0);
+        })
     }
 
     const test = (nativeEvent) => {
@@ -65,15 +112,14 @@ const GameScene = (props) => {
     }
 
     useEffect(()=>{
-        console.log("rerenderCanvas")
         let canvas = canvasRef.current;
         canvas.addEventListener("mousedown", test)
         fillCanvas(history.location.state.previewImages[0])
+        setGameImages(history.location.state.previewImages)
     }, [])
 
     useEffect(()=> {
         if (selectedPixel.x === -1) return
-        console.log(selectedPixel)
         let canvas = canvasRef.current;
         let ctx = canvas.getContext('2d')
         let toDel = -1
@@ -81,58 +127,92 @@ const GameScene = (props) => {
         let x = selectedPixel.x
         let y = selectedPixel.y
         for (let i = 0; i < answer.length; i++){
-            let answerX = answer[i]['x']
-            let answerY = answer[i]['y']
-            console.log("check")
-            console.log(answerX, answerY)
-            if ((answerX - radius<= x && x <= answerX + radius) && (answerY - radius<= y && y <= answerY + radius)){
+            let answerId = answer[i].id
+            let answerArray = answer[i].components
+            let answerX = answerArray[0]
+            let answerY = answerArray[1]
+            let answerOffsetX = answerArray[2]
+            let answerOffsetY = answerArray[3]
+
+            if ((answerX<= x && x <= answerX + answerOffsetX) && (answerY<= y && y <= answerY + answerOffsetY)){
                 ctx.beginPath();
-                ctx.arc(x, y, radius, 0, Math.PI * 2);
                 ctx.strokeStyle="red"
-                ctx.stroke();
+                ctx.lineWidth = 3;
+                ctx.strokeRect(answerX, answerY, answerOffsetX, answerOffsetY);
                 ctx.closePath();
-                toDel = answer[i]['id']
+                toDel = answerId
                 foundAns = true
                 break
             }
         }
+        var displayMenu = document.getElementById("correctioness")
+        while(displayMenu.childNodes.length > 0) {
+            displayMenu.removeChild(displayMenu.firstChild)
+        }
+        var goodOrBad = document.createElement("img")
         if (foundAns) {
-            console.log('gonnaDelete', toDel)
-            console.log(toDel)
+            setAnswerCount(answerCount + 1)
+            const toEnd = answer.length
             setAnswer(answer.filter((item) => (item.id !== toDel)))
+            if (toEnd === 1){
+                setStageCount(stageCount + 1)
+                return
+            }
+            goodOrBad.setAttribute("src", good)
+            goodOrBad.setAttribute("style", "width: 100px; height: 100px")
+            displayMenu.appendChild(goodOrBad)
+            setTimeout(()=>{displayMenu.removeChild(displayMenu.firstChild)}, 700)
         }
         else {
-            alert("오답입니다 ㅎ;")
+            goodOrBad.setAttribute("src", bad)
+            goodOrBad.setAttribute("style", "width: 100px; height: 100px")
+            displayMenu.appendChild(goodOrBad)
+            setTimeout(()=>{if (displayMenu.childNodes.length > 0) displayMenu.removeChild(displayMenu.firstChild)}, 700)
         }
+        
     }, [selectedPixel])
 
     useEffect(()=> {
-        if (answer.length === 0) {
-            alert("모든 정답을 찾으셨습니다!");
-            setAnswer([{id: 1, x: 200, y:  200}, {id: 2, x: 900, y: 900}])
-            setStageCount(stageCount+1)
-        }
+        var txt = document.getElementById("shareContent")
+        txt.textContent = String(answer.length) + " spots to find!"
     }, [answer])
 
-    useEffect(()=>{
-        console.log("stagecount", stageCount)
-        console.log("gameImages", gameImages)
+    useEffect(() => {
         if (stageCount !== 0){
-            if(stageCount === gameImages.length){
-                alert("끝났다리~ 히히~")
-                return
+            setAnswerCount(0)
+            setTotalCount(0)
+        }
+        if(gameImages.length === gameResult.length){
+            alert("끝났다리~ 히히~")
+            console.log(gameResult)
+            history.push({
+                pathname: "/game/result",
+                state: {gameResult: gameResult}
+            })
+            return
+        }
+    }, [gameResult])
+
+    useEffect(()=>{
+        if (stageCount !== 0){
+            if (answer.length !== 0) {
+                alert("시간초과입니다! 정답을 확인하세요")
             }
-            console.log(stageCount)
-            let canvas = canvasRef.current;
-            const context = canvas.getContext('2d')
-            fillCanvas(gameImages[stageCount])
-            alert("다음 스테이지로 넘어갑니다! 히히~")
+            setGameResult(gameResult.concat({id: stageCount - 1, origin: totalCount, answer: answerCount}))
+            var displayMenu = document.getElementById("2")
+            if (stageCount !== gameImages.length){
+                while(displayMenu.childNodes.length > 0) {
+                    displayMenu.removeChild(displayMenu.firstChild)
+                }
+                fillCanvas(gameImages[stageCount])
+                alert("다음 스테이지로 넘어갑니다!")
+            }
+
         }
     }, [stageCount])
 
-
-
     useEffect(() => {
+        if (minutes === -1 && seconds === -1) return
         const countdown = setInterval(() => {
             if (parseInt(seconds) > 0) {
                 setSeconds(parseInt(seconds) - 1);
@@ -140,19 +220,19 @@ const GameScene = (props) => {
             if (parseInt(seconds) === 0) {
                 if (parseInt(minutes) === 0) {
                     clearInterval(countdown);
+                    drawAnswer();
+                    setStageCount(stageCount + 1)
                 } else {
                 setMinutes(parseInt(minutes) - 1);
                 setSeconds(59);
                 }
-            }
-            if (parseInt(minutes) === 0 && parseInt(seconds) === 0){
-                //alert("개같이 멸망!");
             }
         }, 1000);
         return () => {
             clearInterval(countdown)
         };
     }, [minutes, seconds]);
+
 
 
 
@@ -165,7 +245,6 @@ const GameScene = (props) => {
             </div>
             <div className="temp">
                 <div className="imageContainer" id="2">
-                    이미지를 불러오는 중입니다..
                 </div>
             </div>
         </div>
@@ -176,9 +255,12 @@ const GameScene = (props) => {
                         <span id="timerContent" className="menuText">{minutes}:{seconds < 10 ? `0${seconds}` : seconds}</span>
                     </div>
                 </div>
+                <div id="correctioness" className="underbarMenu" >
+                    
+                </div>
                 <div id="shareCase" className="underbarMenu" >
-                    <div id="share" className="menuContainer" >
-                        <span id="shareContent">게임 공유하기</span>
+                    <div id="share" className="menuContainer" > 
+                        <span id="shareContent"></span>
                     </div>
                 </div>
             </div>

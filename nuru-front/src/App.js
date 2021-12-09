@@ -9,6 +9,7 @@ import ImageUpload from './pages/ImageUpload.js';
 import ImageConfirm from './pages/ImageConfirm.js';
 import GameScene from './pages/GameScene.js';
 import GameImage from './pages/GameImage.js';
+import GameResult from './pages/GameResult.js';
 
 function App() {
   const cookies = new Cookies();
@@ -30,7 +31,7 @@ function App() {
           <Route exact path="/game/image-upload" component={ImageUpload}></Route>
           <Route exact path="/game/image-upload/confirm" component={ImageConfirm}></Route>
           <Route exact path="/game/gamescene" component={GameScene}></Route>
-          <Route exact path="/debug/canvas" component={GameImage}></Route>
+          <Route exact path="/game/result" component={GameResult}></Route>
         </Switch>
       </BrowserRouter>
     );

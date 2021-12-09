@@ -1,0 +1,159 @@
+button {
+    width: 250px;
+    height: 77px;
+    margin: 50px 50px;
+    padding: 10px 20px;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+}
+
+.buttonText {
+    font-family: CascadiaCode;
+    font-size: 19px;
+    font-weight: 600;
+    font-stretch: normal;
+    line-height: 1.16;
+    letter-spacing: normal;
+    text-align: center;
+    color: #000
+}
+
+.mainmenu {
+    position: absolute;
+    left: 49%;
+    top: 60%;
+    translate: transform(-50%, -50%);
+    background-color: rgba(8,97,119,.596);
+    color: #fff;
+    font-weight: 700;
+    font-size: 20px;
+    border: none;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.result-div{
+    width: 579px;
+    height: 556px;
+    margin: 55px 53px 0 110px;
+    border: solid 1.5px #000;
+    background-color: #fff;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+}
+
+.result-main-text{
+    font-family: CascadiaCode;
+    font-size: 50px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.16;
+    letter-spacing: normal;
+    text-align: center;
+    color: #000;
+    margin-left: 30%;
+}
+
+
+.result-end-text{
+    font-family: CascadiaCode;
+    font-size: 30px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.16;
+    letter-spacing: normal;
+    text-align: left;
+    color: #000;
+}
+
+.result-div-sub {
+    width : 579px;
+    height : 50px;
+    margin-top: 20px;
+}
+
+
+.result-head-text{
+    font-family: CascadiaCode;
+    font-size: 20px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.16;
+    letter-spacing: normal;
+    text-align: center;
+    color: #000;
+    float: left;
+}
+
+.success-text{
+    font-family: CascadiaCode;
+    font-size: 20px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.16;
+    letter-spacing: normal;
+    text-align: center;
+    color: #09719f;
+    float: left;
+}
+
+.fail-text{
+    font-family: CascadiaCode;
+    font-size: 20px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.16;
+    letter-spacing: normal;
+    text-align: center;
+    color: #ff0000;
+    float: left;
+}
+
+.median {
+    font-family: CascadiaCode;
+    font-size: 20px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.16;
+    letter-spacing: normal;
+    text-align: center;
+    color: #000;
+    float: left;
+}
+
+.result-fail{
+    font-family: CascadiaCode;
+    font-size: 20px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.16;
+    letter-spacing: normal;
+    text-align: center;
+    color: #ffafaf;
+    float: left;
+}
+
+.result-success{
+    font-family: CascadiaCode;
+    font-size: 20px;
+    font-weight: 600;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.16;
+    letter-spacing: normal;
+    text-align: center;
+    color: #fee85c;
+    float: left;
+}

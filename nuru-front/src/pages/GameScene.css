@@ -86,7 +86,7 @@
 }
 
 #share {
-    padding-left: 24%;
+    padding-left: 19%;
 }
 
 #shareContent {
@@ -113,3 +113,9 @@
     text-align: center;
 }
 
+#correctioness {
+    background-color: rgb(252, 207, 253);
+    margin-left: 46.3%;
+    text-align: center;
+    width: 150px;
+}

@@ -1,6 +1,5 @@
+const rest_api_key = "c38ee04e16631dabbb8e43a1ed540d05"
+const redirect_URI = "https://nuru.kr/oauth/callback/kakao-login"
 
-const appKey = "c38ee04e16631dabbb8e43a1ed540d05";
-const redirectURI = "http://localhost:3000/oauth/callback/kakao-login";
 
-
-export const authURL = `https://kauth.kakao.com/oauth/authorize?client_id=${appKey}&redirect_uri=${redirectURI}&response_type=code`;
+export const kakao_login_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${rest_api_key}&redirect_uri=${redirect_URI}&response_type=code`

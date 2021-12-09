@@ -5,7 +5,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { CookiesProvider } from 'react-cookie';
 import App from './App';
 
-axios.defaults.baseURL = "http://localhost:8000";
+// axios.defaults.baseURL = "http://localhost:8000";
+axios.defaults.baseURL = "http://ec2-13-125-255-212.ap-northeast-2.compute.amazonaws.com:8000";   
 axios.defaults.withCredentials = true;
 ReactDOM.render(
     <App/>,

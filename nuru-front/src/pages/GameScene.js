@@ -81,7 +81,11 @@ const GameScene = (props) => {
         setTimeout(1000)
 
         var modifiedImg = imageSrc.split(",")
-        axios.post("http://70f4-34-80-136-41.ngrok.io/invocations", modifiedImg[1], {
+
+        let URL = ""
+        if (window.location.protocol === "https:") URL = "https://cors-everywhere.herokuapp.com/http://70f4-34-80-136-41.ngrok.io/invocations"
+        else URL = "http://70f4-34-80-136-41.ngrok.io/invocations"
+        axios.post(URL, modifiedImg[1], {
             headers: {
                 "content_type": 'image/png'
             }
@@ -102,8 +106,8 @@ const GameScene = (props) => {
             var myImg = document.createElement("img")
             myImg.setAttribute("src", modifiedImg[0] + "," +imgVar)
             myRoot.appendChild(myImg)
-            setSeconds(10);
-            setMinutes(0);
+            setSeconds(0);
+            setMinutes(2);
         })
     }
 

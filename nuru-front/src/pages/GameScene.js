@@ -84,9 +84,9 @@ const GameScene = (props) => {
 
         var modifiedImg = imageSrc.split(",")
 
-        let URL = ""
-        if (window.location.protocol === "https:") URL = "https://cors-everywhere.herokuapp.com/" + modelBase
-        else URL = modelBase
+        let URL = modelBase
+        // if (window.location.protocol === "https:") URL = "https://cors-everywhere.herokuapp.com/" + modelBase
+        // else URL = modelBase
         console.log(URL)
         axios.post(URL, modifiedImg[1], {
             headers: {
@@ -190,7 +190,7 @@ const GameScene = (props) => {
             setTotalCount(0)
         }
         if(gameImages.length === gameResult.length){
-            alert("끝났다리~ 히히~")
+            alert("게임이 끝났습니다!")
             console.log(gameResult)
             history.push({
                 pathname: "/game/result",

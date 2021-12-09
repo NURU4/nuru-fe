@@ -87,6 +87,7 @@ const GameScene = (props) => {
         let URL = ""
         if (window.location.protocol === "https:") URL = "https://cors-everywhere.herokuapp.com/" + modelBase
         else URL = modelBase
+        console.log(URL)
         axios.post(URL, modifiedImg[1], {
             headers: {
                 "content_type": 'image/png'

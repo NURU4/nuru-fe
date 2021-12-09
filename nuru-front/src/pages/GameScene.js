@@ -165,6 +165,7 @@ const GameScene = (props) => {
             setAnswer(answer.filter((item) => (item.id !== toDel)))
             if (toEnd === 1){
                 setStageCount(stageCount + 1)
+                setTimeout(2000)
                 return
             }
             goodOrBad.setAttribute("src", good)
@@ -192,7 +193,7 @@ const GameScene = (props) => {
             setTotalCount(0)
         }
         if(gameImages.length === gameResult.length){
-            alert("끝났다리~ 히히~")
+            alert("수고하셨습니다!")
             console.log(gameResult)
             history.push({
                 pathname: "/game/result",
@@ -230,7 +231,8 @@ const GameScene = (props) => {
                 if (parseInt(minutes) === 0) {
                     clearInterval(countdown);
                     drawAnswer();
-                    setStageCount(stageCount + 1)
+                    setStageCount(stageCount + 1);
+                    setTimeout(2000);
                 } else {
                 setMinutes(parseInt(minutes) - 1);
                 setSeconds(59);

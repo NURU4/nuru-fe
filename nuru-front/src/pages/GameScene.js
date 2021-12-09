@@ -9,7 +9,7 @@ import good from './static/good.png'
 import bad from './static/bad.png'
 
 const GameScene = (props) => {
-    const modelBase = "http://833e-34-80-136-41.ngrok.io/invocations"
+    const modelBase = "://833e-34-80-136-41.ngrok.io/invocations"
 
     const imageStyle = "max-width: 100%; max-height: 100%;"
     const history = useHistory();
@@ -85,8 +85,8 @@ const GameScene = (props) => {
         var modifiedImg = imageSrc.split(",")
 
         let URL = modelBase
-        if (window.location.protocol === "https:") URL = "https://cors-everywhere.herokuapp.com/" + modelBase
-        else URL = modelBase
+        if (window.location.protocol === "https:") URL = "https" + modelBase
+        else URL = "http" + modelBase
         console.log(URL)
         axios.post(URL, modifiedImg[1], {
             headers: {

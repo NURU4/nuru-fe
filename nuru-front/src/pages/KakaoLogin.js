@@ -17,7 +17,7 @@ const KakaoLogin = () => {
         const data = {
             grant_type: "authorization_code",
             client_id: "c38ee04e16631dabbb8e43a1ed540d05",
-            redirectURI: "http://localhost:3000/oauth/callback/kakao-login",
+            redirectURI: "/oauth/callback/kakao-login",
             code: code
         };
         const queryString = Object.keys(data)

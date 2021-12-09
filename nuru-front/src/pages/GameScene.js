@@ -26,10 +26,11 @@ const GameScene = (props) => {
         let canvas = canvasRef.current;
         let context = canvas.getContext('2d')
         context.clearRect(0, 0, maxWidth, maxHeight)
+        setTimeout(()=>{}, 1000)
         var image = new Image()
         image.src = imageSrc
         setTimeout(() => {
-            console.log("sleep~~");
+            console.log("sleep~~"); 
             setSeconds(0);
             setMinutes(2);
         }, 1000);
@@ -56,7 +57,7 @@ const GameScene = (props) => {
         canvas.width = maxWidth
         canvas.height = maxHeight
         context.drawImage(image, startPoint_x, startPoint_y, imageWidth, imageHeight)
-
+        setTimeout(1000)
     }
 
     const test = (nativeEvent) => {

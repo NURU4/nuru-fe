@@ -9,6 +9,8 @@ import good from './static/good.png'
 import bad from './static/bad.png'
 
 const GameScene = (props) => {
+    const modelBase = "://833e-34-80-136-41.ngrok.io/invocations"
+
     const imageStyle = "max-width: 100%; max-height: 100%;"
     const history = useHistory();
 
@@ -81,7 +83,12 @@ const GameScene = (props) => {
         setTimeout(1000)
 
         var modifiedImg = imageSrc.split(",")
-        axios.post("http://70f4-34-80-136-41.ngrok.io/invocations", modifiedImg[1], {
+
+        let URL = modelBase
+        if (window.location.protocol === "https:") URL = "https" + modelBase
+        else URL = "http" + modelBase
+        console.log(URL)
+        axios.post(URL, modifiedImg[1], {
             headers: {
                 "content_type": 'image/png'
             }

@@ -10,7 +10,7 @@ import App from './App';
 const protocol = window.location.protocol;
 axios.defaults.baseURL = "http://localhost:8000";
 if(protocol==="https:")axios.defaults.baseURL = "https://cors-everywhere.herokuapp.com/http://api.nuru.kr:8000"
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;
 ReactDOM.render(
     <App/>,
     document.getElementById('root')      

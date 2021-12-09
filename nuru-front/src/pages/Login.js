@@ -23,7 +23,7 @@ const Login = () => {
             </button>
           </Link>
         </div>
-        <div>
+        {/* <div>
           <Link to="/login/nuru">
             <button className="nuruButton">
               <span className="buttonText">NURU 로그인</span>
@@ -36,7 +36,7 @@ const Login = () => {
               <span className="buttonText">로그인 없이 시작하기</span>
             </button>
           </Link>
-        </div>
+        </div> */}
       </div>
       </>
     );

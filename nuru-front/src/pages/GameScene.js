@@ -9,8 +9,6 @@ import good from './static/good.png'
 import bad from './static/bad.png'
 
 const GameScene = (props) => {
-    const modelBase = "http://833e-34-80-136-41.ngrok.io/invocations"
-
     const imageStyle = "max-width: 100%; max-height: 100%;"
     const history = useHistory();
 
@@ -83,12 +81,7 @@ const GameScene = (props) => {
         setTimeout(1000)
 
         var modifiedImg = imageSrc.split(",")
-
-        let URL = modelBase
-        if (window.location.protocol === "https:") URL = "https://cors-everywhere.herokuapp.com/" + modelBase
-        else URL = modelBase
-        console.log(URL)
-        axios.post(URL, modifiedImg[1], {
+        axios.post("http://70f4-34-80-136-41.ngrok.io/invocations", modifiedImg[1], {
             headers: {
                 "content_type": 'image/png'
             }
@@ -109,8 +102,8 @@ const GameScene = (props) => {
             var myImg = document.createElement("img")
             myImg.setAttribute("src", modifiedImg[0] + "," +imgVar)
             myRoot.appendChild(myImg)
-            setSeconds(0);
-            setMinutes(2);
+            setSeconds(10);
+            setMinutes(0);
         })
     }
 
@@ -190,7 +183,7 @@ const GameScene = (props) => {
             setTotalCount(0)
         }
         if(gameImages.length === gameResult.length){
-            alert("게임이 끝났습니다!")
+            alert("끝났다리~ 히히~")
             console.log(gameResult)
             history.push({
                 pathname: "/game/result",

@@ -8,30 +8,31 @@ const GameScene = (props) => {
     const imageStyle = "max-width: 100%; max-height: 100%;"
     const history = useHistory();
 
-    const [minutes, setMinutes] = useState(2)
+    const [minutes, setMinutes] = useState(0)
     const [seconds, setSeconds] = useState(0)
 
-    const [gameImages, setGameImages] = useState([]);
+    const [gameImages, setGameImages] = useState(history.location.state.previewImages);
 
     const canvasRef = useRef();
     const maxWidth = 904;
     const maxHeight = 904;
     const radius = 200
     
-    const [answer, setAnswer] = useState([{x: 450, y: 450}, {x: 1, y: 1}])
-
-    const [stageClear, setStageClear] = useState(false)
+    const [answer, setAnswer] = useState([{id:1, x: 450, y: 450}, {id:2, x: 1, y: 1}, {id:3, x: 900, y: 900}])
     const [stageCount, setStageCount] = useState(0);
+    const [selectedPixel, setSelectedPixel] = useState({x: -1, y: -1})
 
     const fillCanvas = (imageSrc) => {
         let canvas = canvasRef.current;
         let context = canvas.getContext('2d')
-        canvas.addEventListener("mousedown", test)
         context.clearRect(0, 0, maxWidth, maxHeight)
-
         var image = new Image()
         image.src = imageSrc
-        console.log(imageSrc.length)
+        setTimeout(() => {
+            console.log("sleep~~");
+            setSeconds(0);
+            setMinutes(2);
+        }, 1000);
 
         var imageWidth = image.width;
         var imageHeight = image.height;
@@ -55,72 +56,80 @@ const GameScene = (props) => {
         canvas.width = maxWidth
         canvas.height = maxHeight
         context.drawImage(image, startPoint_x, startPoint_y, imageWidth, imageHeight)
+
     }
 
     const test = (nativeEvent) => {
-        var ctx = canvasRef.current.getContext('2d')
-        var x = nativeEvent.offsetX
-        var y = nativeEvent.offsetY
-        var foundAns = false
-        console.log(answer)
+        setSelectedPixel({x: nativeEvent.offsetX, y: nativeEvent.offsetY})
+    }
+
+    useEffect(()=>{
+        console.log("rerenderCanvas")
+        let canvas = canvasRef.current;
+        canvas.addEventListener("mousedown", test)
+        fillCanvas(history.location.state.previewImages[0])
+    }, [])
+
+    useEffect(()=> {
+        if (selectedPixel.x === -1) return
+        console.log(selectedPixel)
+        let canvas = canvasRef.current;
+        let ctx = canvas.getContext('2d')
+        let toDel = -1
+        let foundAns = false
+        let x = selectedPixel.x
+        let y = selectedPixel.y
         for (let i = 0; i < answer.length; i++){
             let answerX = answer[i]['x']
             let answerY = answer[i]['y']
+            console.log("check")
+            console.log(answerX, answerY)
             if ((answerX - radius<= x && x <= answerX + radius) && (answerY - radius<= y && y <= answerY + radius)){
                 ctx.beginPath();
-                ctx.arc(nativeEvent.offsetX, nativeEvent.offsetY, radius, 0, Math.PI * 2);
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
                 ctx.strokeStyle="red"
                 ctx.stroke();
                 ctx.closePath();
-                if (answer.length === 1) setStageClear(true);
-                setAnswer(answer.splice(i, 1))
+                toDel = answer[i]['id']
                 foundAns = true
                 break
             }
         }
-        if (!foundAns) {
+        if (foundAns) {
+            console.log('gonnaDelete', toDel)
+            console.log(toDel)
+            setAnswer(answer.filter((item) => (item.id !== toDel)))
+        }
+        else {
             alert("오답입니다 ㅎ;")
         }
-    }
+    }, [selectedPixel])
 
-    useEffect(()=>{
-        if (stageClear) {
+    useEffect(()=> {
+        if (answer.length === 0) {
             alert("모든 정답을 찾으셨습니다!");
-            setAnswer([{x: 450, y: 450}, {x: 1, y: 1}])
-            setStageClear(false);
+            setAnswer([{id: 1, x: 200, y:  200}, {id: 2, x: 900, y: 900}])
             setStageCount(stageCount+1)
-            console.log("넘어간다아이이이잇!")
         }
-    }, [stageClear])
+    }, [answer])
 
     useEffect(()=>{
+        console.log("stagecount", stageCount)
+        console.log("gameImages", gameImages)
         if (stageCount !== 0){
+            if(stageCount === gameImages.length){
+                alert("끝났다리~ 히히~")
+                return
+            }
             console.log(stageCount)
             let canvas = canvasRef.current;
             const context = canvas.getContext('2d')
-            fillCanvas(history.location.state.previewImages[stageCount])
-            setMinutes(2)
-            setSeconds(0)
-            console.log("넘어왔다아이이이잇!")
+            fillCanvas(gameImages[stageCount])
+            alert("다음 스테이지로 넘어갑니다! 히히~")
         }
     }, [stageCount])
 
-    useEffect(()=>{
-        /*
-        let r = document.getElementById("1")
-        let img = document.createElement("img")
-        if (r.childNodes.length === 0){
-            img.setAttribute("src", history.location.state.previewImages[0])
-            img.setAttribute("id", "originalImage")
-            img.setAttribute("className", "gameImage")
-            img.setAttribute("style", imageStyle)
-            r.appendChild(img)
-        }
-        console.log(gameImages)
-        */
-        fillCanvas(history.location.state.previewImages[0])
-        setGameImages(history.location.state.previewImages)
-    }, [])
+
 
     useEffect(() => {
         const countdown = setInterval(() => {
@@ -177,3 +186,16 @@ const GameScene = (props) => {
 }
 
 export default GameScene
+
+/*
+let r = document.getElementById("1")
+let img = document.createElement("img")
+if (r.childNodes.length === 0){
+    img.setAttribute("src", history.location.state.previewImages[0])
+    img.setAttribute("id", "originalImage")
+    img.setAttribute("className", "gameImage")
+    img.setAttribute("style", imageStyle)
+    r.appendChild(img)
+}
+console.log(gameImages)
+*/

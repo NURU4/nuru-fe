@@ -9,7 +9,7 @@ import good from './static/good.png'
 import bad from './static/bad.png'
 
 const GameScene = (props) => {
-    const modelBase = "://833e-34-80-136-41.ngrok.io/invocations"
+    const modelBase = "://37d0-34-80-136-41.ngrok.io/invocations"
 
     const imageStyle = "max-width: 100%; max-height: 100%;"
     const history = useHistory();
@@ -40,12 +40,12 @@ const GameScene = (props) => {
             let answerArray = answer[i].components
             let answerX = answerArray[0]
             let answerY = answerArray[1]
-            let answerOffsetX = answerArray[2]
-            let answerOffsetY = answerArray[3]
+            let radius = answerArray[2]
             ctx.beginPath();
             ctx.strokeStyle="green"
             ctx.lineWidth = 5;
-            ctx.strokeRect(answerX, answerY, answerOffsetX, answerOffsetY);
+            ctx.arc(answerX, answerY, radius, 0, 2*Math.PI);
+            ctx.stroke();
             ctx.closePath();
         }
 
@@ -56,9 +56,9 @@ const GameScene = (props) => {
         let context = canvas.getContext('2d')
         context.clearRect(0, 0, maxWidth, maxHeight)
         var image = new Image()
-        setTimeout(()=>{}, 1000)
+        setTimeout(()=>{}, 2000)
         image.src = imageSrc
-        setTimeout(()=>{}, 1000)
+        setTimeout(()=>{}, 2000)
         var imageWidth = image.width;
         var imageHeight = image.height;
         var startPoint_x = 0;
@@ -80,10 +80,10 @@ const GameScene = (props) => {
         canvas.width = maxWidth
         canvas.height = maxHeight
         context.drawImage(image, startPoint_x, startPoint_y, imageWidth, imageHeight)
-        setTimeout(1000)
+        setTimeout(2000)
 
         var modifiedImg = imageSrc.split(",")
-
+        setTimeout(2000)
         let URL = modelBase
         if (window.location.protocol === "https:") URL = "https" + modelBase
         else URL = "http" + modelBase
@@ -138,14 +138,16 @@ const GameScene = (props) => {
             let answerArray = answer[i].components
             let answerX = answerArray[0]
             let answerY = answerArray[1]
-            let answerOffsetX = answerArray[2]
-            let answerOffsetY = answerArray[3]
+            let radius = answerArray[2]
 
-            if ((answerX<= x && x <= answerX + answerOffsetX) && (answerY<= y && y <= answerY + answerOffsetY)){
+            var a = answerX - x;
+            var b = answerY - y;
+            if (Math.sqrt(a*a + b*b) < radius) {
                 ctx.beginPath();
                 ctx.strokeStyle="red"
                 ctx.lineWidth = 3;
-                ctx.strokeRect(answerX, answerY, answerOffsetX, answerOffsetY);
+                ctx.arc(answerX, answerY, radius, 0, 2*Math.PI);
+                ctx.stroke();
                 ctx.closePath();
                 toDel = answerId
                 foundAns = true

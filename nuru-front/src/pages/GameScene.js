@@ -112,8 +112,8 @@ const GameScene = (props) => {
         }).then(imgVar=>{
             var myImg = document.getElementById("modified")
             myImg.setAttribute("src", modifiedImg[0] + "," +imgVar)
-            setSeconds(10);
-            setMinutes(0);
+            setSeconds(0);
+            setMinutes(1);
         })
         
     }

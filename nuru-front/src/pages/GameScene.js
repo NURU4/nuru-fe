@@ -58,37 +58,37 @@ const GameScene = (props) => {
         let context = canvas.getContext('2d')
         var image = new Image()
         image.src = imageSrc
-        
-        
 
-        var imageWidth = image.width;
-        var imageHeight = image.height;
-        var startPoint_x = 0;
-        var startPoint_y = 0;
-        if (imageWidth > imageHeight) {
-            if (imageWidth > maxWidth){
-                imageHeight *= maxWidth / imageWidth;
-                imageWidth = maxWidth
-            }   
-        }
-        else {
-            if (imageHeight > maxHeight) {
-                imageWidth *= maxHeight / imageHeight;
-                imageHeight = maxHeight
+        image.onload = () => {
+
+            var imageWidth = image.width;
+            var imageHeight = image.height;
+            var startPoint_x = 0;
+            var startPoint_y = 0;
+            if (imageWidth > imageHeight) {
+                if (imageWidth > maxWidth){
+                    imageHeight *= maxWidth / imageWidth;
+                    imageWidth = maxWidth
+                }   
             }
-        }
-        startPoint_y = (maxHeight - imageHeight) / 2
-        startPoint_x = (maxWidth - imageWidth) / 2
-        canvas.width = maxWidth
-        canvas.height = maxHeight
+            else {
+                if (imageHeight > maxHeight) {
+                    imageWidth *= maxHeight / imageHeight;
+                    imageHeight = maxHeight
+                }
+            }
+            startPoint_y = (maxHeight - imageHeight) / 2
+            startPoint_x = (maxWidth - imageWidth) / 2
+            canvas.width = maxWidth
+            canvas.height = maxHeight
 
-        context.clearRect(0, 0, 904, 904)
-
-        setTimeout(()=>{
+            context.clearRect(0, 0, 904, 904)
             context.drawImage(image, startPoint_x, startPoint_y, imageWidth, imageHeight)
-        }, 300)
+            // setTimeout(()=>{
+            //     context.drawImage(image, startPoint_x, startPoint_y, imageWidth, imageHeight)
+            // }, 300)
 
-
+        }
         var modifiedImg = imageSrc.split(",")
         let URL = modelBase
         if (window.location.protocol === "https:") URL = "https" + modelBase
@@ -112,8 +112,8 @@ const GameScene = (props) => {
         }).then(imgVar=>{
             var myImg = document.getElementById("modified")
             myImg.setAttribute("src", modifiedImg[0] + "," +imgVar)
-            setSeconds(0);
-            setMinutes(1);
+            setSeconds(10);
+            setMinutes(0);
         })
         
     }

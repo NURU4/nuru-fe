@@ -7,9 +7,10 @@ import axios from "axios";
 
 import good from './static/good.png'
 import bad from './static/bad.png'
+import back from './static/loading.gif'
 
 const GameScene = (props) => {
-    const modelBase = "://37d0-34-80-136-41.ngrok.io/invocations"
+    const modelBase = "://5776-34-80-6-52.ngrok.io/invocations"
 
     const imageStyle = "max-width: 100%; max-height: 100%;"
     const history = useHistory();
@@ -24,6 +25,8 @@ const GameScene = (props) => {
     const maxHeight = 904;
     const radius = 200
     
+    const myRoot = document.getElementById("2")
+
     const [gameResult, setGameResult] = useState([])
 
     const [answer, setAnswer] = useState([])
@@ -48,17 +51,16 @@ const GameScene = (props) => {
             ctx.stroke();
             ctx.closePath();
         }
-
     }
 
     const fillCanvas = (imageSrc) => {
         let canvas = canvasRef.current
         let context = canvas.getContext('2d')
-        context.clearRect(0, 0, maxWidth, maxHeight)
         var image = new Image()
-        setTimeout(()=>{}, 2000)
         image.src = imageSrc
-        setTimeout(()=>{}, 2000)
+        
+        
+
         var imageWidth = image.width;
         var imageHeight = image.height;
         var startPoint_x = 0;
@@ -79,11 +81,15 @@ const GameScene = (props) => {
         startPoint_x = (maxWidth - imageWidth) / 2
         canvas.width = maxWidth
         canvas.height = maxHeight
-        context.drawImage(image, startPoint_x, startPoint_y, imageWidth, imageHeight)
-        setTimeout(2000)
+
+        context.clearRect(0, 0, 904, 904)
+
+        setTimeout(()=>{
+            context.drawImage(image, startPoint_x, startPoint_y, imageWidth, imageHeight)
+        }, 300)
+
 
         var modifiedImg = imageSrc.split(",")
-        setTimeout(2000)
         let URL = modelBase
         if (window.location.protocol === "https:") URL = "https" + modelBase
         else URL = "http" + modelBase
@@ -104,14 +110,12 @@ const GameScene = (props) => {
             setTotalCount(answerLst.length)
             return res.data.image
         }).then(imgVar=>{
-            var myRoot = document.getElementById("2")
-            if (myRoot.childNodes.length > 0) myRoot.removeChild( myRoot.firstChild)
-            var myImg = document.createElement("img")
+            var myImg = document.getElementById("modified")
             myImg.setAttribute("src", modifiedImg[0] + "," +imgVar)
-            myRoot.appendChild(myImg)
-            setSeconds(0);
-            setMinutes(3);
+            setSeconds(10);
+            setMinutes(0);
         })
+        
     }
 
     const test = (nativeEvent) => {
@@ -121,7 +125,7 @@ const GameScene = (props) => {
     useEffect(()=>{
         let canvas = canvasRef.current;
         canvas.addEventListener("mousedown", test)
-        fillCanvas(history.location.state.previewImages[0])
+        fillCanvas(history.location.state.previewImages[stageCount])
         setGameImages(history.location.state.previewImages)
     }, [])
 
@@ -165,19 +169,18 @@ const GameScene = (props) => {
             setAnswer(answer.filter((item) => (item.id !== toDel)))
             if (toEnd === 1){
                 setStageCount(stageCount + 1)
-                setTimeout(2000)
                 return
             }
             goodOrBad.setAttribute("src", good)
             goodOrBad.setAttribute("style", "width: 100px; height: 100px")
             displayMenu.appendChild(goodOrBad)
-            setTimeout(()=>{displayMenu.removeChild(displayMenu.firstChild)}, 700)
+            setTimeout(()=>{displayMenu.removeChild(displayMenu.firstChild)}, 500)
         }
         else {
             goodOrBad.setAttribute("src", bad)
             goodOrBad.setAttribute("style", "width: 100px; height: 100px")
             displayMenu.appendChild(goodOrBad)
-            setTimeout(()=>{if (displayMenu.childNodes.length > 0) displayMenu.removeChild(displayMenu.firstChild)}, 700)
+            setTimeout(()=>{if (displayMenu.childNodes.length > 0) displayMenu.removeChild(displayMenu.firstChild)}, 500)
         }
         
     }, [selectedPixel])
@@ -189,8 +192,7 @@ const GameScene = (props) => {
 
     useEffect(() => {
         if (stageCount !== 0){
-            setAnswerCount(0)
-            setTotalCount(0)
+            //
         }
         if(gameImages.length === gameResult.length){
             alert("수고하셨습니다!")
@@ -205,21 +207,39 @@ const GameScene = (props) => {
 
     useEffect(()=>{
         if (stageCount !== 0){
-            if (answer.length !== 0) {
-                alert("시간초과입니다! 정답을 확인하세요")
-            }
             setGameResult(gameResult.concat({id: stageCount - 1, origin: totalCount, answer: answerCount}))
-            var displayMenu = document.getElementById("2")
-            if (stageCount !== gameImages.length){
-                while(displayMenu.childNodes.length > 0) {
-                    displayMenu.removeChild(displayMenu.firstChild)
-                }
-                fillCanvas(gameImages[stageCount])
-                alert("다음 스테이지로 넘어갑니다!")
+            setSeconds();
+            setMinutes();
+            if (answer.length !== 0) {        
+                alert("시간초과입니다! 정답을 확인하세요")
+                drawAnswer()
+                setTimeout(()=>{     
+                    if (stageCount !== gameImages.length) {  
+                        var Img = document.getElementById("modified")
+                        Img.setAttribute("src", back)
+                        alert("다음 스테이지로 넘어가시겠습니까?")
+                        fillCanvas(gameImages[stageCount])
+                        setAnswerCount(0)
+                        setTotalCount(0)
+                    }
+                }, 1000)
+            } else {
+                alert("잘 하셨어요!")
+                setTimeout(()=>{     
+                    if (stageCount !== gameImages.length) {
+                        var Img = document.getElementById("modified")
+                        Img.setAttribute("src", back)
+                        alert("다음 스테이지로 넘어가시겠습니까?")
+                        fillCanvas(gameImages[stageCount])
+                        setAnswerCount(0)   
+                        setTotalCount(0)
+                    }
+                }, 1000)
             }
-
         }
     }, [stageCount])
+
+
 
     useEffect(() => {
         if (minutes === -1 && seconds === -1) return
@@ -230,9 +250,7 @@ const GameScene = (props) => {
             if (parseInt(seconds) === 0) {
                 if (parseInt(minutes) === 0) {
                     clearInterval(countdown);
-                    drawAnswer();
                     setStageCount(stageCount + 1);
-                    setTimeout(2000);
                 } else {
                 setMinutes(parseInt(minutes) - 1);
                 setSeconds(59);
@@ -256,6 +274,7 @@ const GameScene = (props) => {
             </div>
             <div className="temp">
                 <div className="imageContainer" id="2">
+                    <img src={back} alt="이미지를 로딩중입니다" id="modified"/>
                 </div>
             </div>
         </div>

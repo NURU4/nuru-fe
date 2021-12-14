@@ -10,7 +10,7 @@ import bad from './static/bad.png'
 import back from './static/loading.gif'
 
 const GameScene = (props) => {
-    const modelBase = "://5776-34-80-6-52.ngrok.io/invocations"
+    const modelBase = "://dbf6-35-204-30-174.ngrok.io/invocations"
 
     const imageStyle = "max-width: 100%; max-height: 100%;"
     const history = useHistory();
